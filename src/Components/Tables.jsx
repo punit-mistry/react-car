@@ -90,6 +90,22 @@ const Tables = () => {
     return false;
   });
 
+  // Calculate the time difference in days and hours
+  const calculateTimeDifference = (departureTime) => {
+    if (!departureTime) return "--";
+
+    const now = new Date();
+    const departure = new Date(departureTime);
+    const timeDifference = Math.abs(departure - now);
+
+    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+
+    return `${days}d ${hours}h`;
+  };
+
   return (
     <div>
       <div className="flex flex-wrap justify-center md:justify-start  gap-5 p-5 bg-black font-bold text-white md:flex-row">
@@ -154,7 +170,7 @@ const Tables = () => {
                   <th>VNumber</th>
                   <th>VType</th>
                   <th>Departure</th>
-                  <th>Aviable</th>
+                  <th>Available</th>
                   <th>AtUnloading</th>
                   <th>Current Branch</th>
                 </tr>
@@ -173,21 +189,20 @@ const Tables = () => {
                       )}
                     </td>
                     <td>
-                      {" "}
                       {res?.origin?.departureTime
-                        ? new Date(res?.origin?.departureTime).toISOString()
+                        ? calculateTimeDifference(res?.origin?.departureTime)
                         : "--"}
                     </td>
                     <td>
                       {res.currentTripPoint?.actualArrival
-                        ? new Date(
+                        ? calculateTimeDifference(
                             res.currentTripPoint?.actualArrival
-                          ).toISOString()
+                          )
                         : "--"}
                     </td>
                     <td>
                       {res?.destination?.status == "AT"
-                        ? new Date(res.destination?.arrivalTime).toISOString()
+                        ? calculateTimeDifference(res.destination?.arrivalTime)
                         : "-- "}
                     </td>
                     <td>{res?.currentHub}</td>
